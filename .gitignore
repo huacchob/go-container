@@ -1,0 +1,6 @@
+# secrets
+creds.env
+docker-compose.yml
+
+# bytes files
+__pycache__/

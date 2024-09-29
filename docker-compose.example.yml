@@ -1,0 +1,10 @@
+services:
+  go-app:
+    build: .
+    command: bash -c "go mod download && go build -v -o /usr/local/bin/app ./... &&
+      app"
+    environment:
+    - GITHUB_TOKEN=your_token
+    - GITHUB_USERNAME=your_token
+    volumes:
+    - ./:/usr/src/app
