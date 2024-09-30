@@ -1,10 +1,10 @@
 """Utility functions"""
 
+import logging
 import os
+from logging import Logger, StreamHandler
 from pathlib import Path
 from typing import Optional, TextIO
-import logging
-from logging import Logger, StreamHandler
 
 from dotenv import load_dotenv
 
@@ -13,7 +13,7 @@ def find_file_path(
     target_file_name: str,
     source_file_name: str,
 ) -> Optional[str | None]:
-    """Find the path to the file
+    """Find the path to the file.
 
     Args:
         target_file_name (str): The name of the target file.
@@ -40,7 +40,7 @@ def find_file_path(
         source_file_path.parent.parent.parent,
     ]:
         if directory.joinpath(target_file_name).exists():
-            return str(directory.joinpath(target_file_name))
+            return str(object=directory.joinpath(target_file_name))
 
     raise ValueError(f"File {target_file_name} not found")
 
@@ -63,10 +63,10 @@ def load_secrets_from_file(
     if not target_file_name.endswith(".env"):
         raise ValueError("File name must end with .env")
     dotenv_path: Optional[str] = find_file_path(
-        target_file_name,
-        source_file_name,
+        target_file_name=target_file_name,
+        source_file_name=source_file_name,
     )
-    load_dotenv(dotenv_path)
+    load_dotenv(dotenv_path=dotenv_path)
 
 
 def get_secret(secret_name: str) -> str:
@@ -81,7 +81,10 @@ def get_secret(secret_name: str) -> str:
     Returns:
         str: The value of the secret
     """
-    secret_value: Optional[str | None] = os.environ.get(secret_name, None)
+    secret_value: Optional[str | None] = os.environ.get(
+        secret_name,
+        default=None,
+    )
     if not secret_value:
         raise ValueError(f"Secret {secret_name} not found")
     return secret_value
@@ -123,12 +126,12 @@ def configure_logger(name: str, logger_level_str: str = "DEFAULT") -> Logger:
     }
     level: int = logger_mappings[logger_level]
 
-    logger: Logger = logging.getLogger(name)
-    logger.setLevel(level)
+    logger: Logger = logging.getLogger(name=name)
+    logger.setLevel(level=level)
 
     console_handler: StreamHandler[TextIO] = StreamHandler()
-    console_handler.setLevel(logging.INFO)
+    console_handler.setLevel(level=logging.INFO)
 
-    logger.addHandler(console_handler)
+    logger.addHandler(hdlr=console_handler)
 
     return logger
