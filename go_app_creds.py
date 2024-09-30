@@ -22,7 +22,7 @@ load_secrets_from_file(target_file_name="creds.env", source_file_name=__file__)
 if not creds_env_file:
     raise ValueError("creds.env file not found")
 
-with open(creds_env_file, mode="r", encoding="utf-8") as creds_file:
+with open(file=creds_env_file, mode="r", encoding="utf-8") as creds_file:
     creds_file: t.TextIO
     secrets_values: str = creds_file.read()
     secrets_values_list: t.List[str] = secrets_values.split(sep="\n")
