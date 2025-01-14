@@ -2,9 +2,9 @@
 
 import logging
 import os
+from glob import glob
 from logging import Logger, StreamHandler
-from pathlib import Path
-from typing import Optional, TextIO
+from typing import List, Optional, TextIO
 
 from dotenv import load_dotenv
 
@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 def find_file_path(
     target_file_name: str,
     source_file_name: str,
-) -> Optional[str | None]:
+) -> str:
     """Find the path to the file.
 
     Args:
@@ -31,18 +31,15 @@ def find_file_path(
     if not source_file_name:
         raise ValueError("Source file name is not specified")
 
-    source_file_path: Path = Path(source_file_name)
-
-    # Check in the same directory, parent directory, and grandparent directory
-    for directory in [
-        source_file_path.parent,
-        source_file_path.parent.parent,
-        source_file_path.parent.parent.parent,
-    ]:
-        if directory.joinpath(target_file_name).exists():
-            return str(object=directory.joinpath(target_file_name))
-
-    raise ValueError(f"File {target_file_name} not found")
+    globs: List[str] = glob(pathname=f"**/{target_file_name}", recursive=True)
+    if len(globs) == 1:
+        return globs[0]
+    elif len(globs) > 1:
+        raise ValueError(
+            f"File {target_file_name} exists in multiple directories",
+        )
+    else:
+        raise ValueError(f"File {target_file_name} not found")
 
 
 def load_secrets_from_file(
